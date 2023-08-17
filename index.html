@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="./index.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/1afa728260.js" crossorigin="anonymous"></script>
+    <title>weather</title>
+</head>
+<body>
+
+    <div class="intro">
+        <h1>Weather-Importmation</h1>
+    </div>
+
+    <div class="weather">
+        
+
+        <div class="upper">
+            <input type="text" value="New york" class="search" placeholder="Enter city name" >
+            <button type="submit" onclick="handleclick()" class="btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+        </div>
+
+        <div class="error">
+            <p>Invalid city name!</p>
+        </div>
+
+        <div class="no-error">
+            <div class="fig">
+                <img class="cloud" src="./images/rain.png" alt="cloud">
+                <p class="temp">22°c</p>
+                <p class="city">NewYork</p>
+            </div>
+
+            <div class="below">
+                <div class="wind">
+                    <img src="./images/wind.png" alt="wind">
+                    <div class="val">
+                        <p class="speed">15km/h</p>
+                        <p>windspeed</p>
+                    </div>
+                    
+                </div>
+                <div class="humidity">
+                    <img src="./images/humidity.png" alt="humidity">
+                    <div class="val">
+                        <p class="humidity-per">50%</p>
+                        <p>Humidity</p>
+                    </div>
+                    
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const apikey = "aa6156f7f3e60ddad72911a94219413d";
+        const apiurl = "https://api.openweathermap.org/data/2.5/weather?units=matric&q=";
+        const city= document.querySelector(".search");
+        const image= document.querySelector(".cloud");
+        
+        // const url="https://api.openweathermap.org/data/2.5/weather?q=London&appid=29c90b9891964fa5d51ceebd08ff0d78&unit=matrix";
+
+        async function checkweather(cityname){
+            const response= await fetch(apiurl+cityname +`&apikey=${apikey}`);
+            
+
+            if(response.status=="404"){
+                document.querySelector(".error").style.display="block";
+                document.querySelector(".no-error").style.display="none";
+            }
+            else{
+                document.querySelector(".error").style.display="none";
+                document.querySelector(".no-error").style.display="block";
+                var data= await response.json();
+
+                const cel=data.main.temp-273;
+    
+                document.querySelector(".city").innerHTML = data.name;
+                document.querySelector(".temp").innerHTML=Math.round(cel)+"°c";
+                document.querySelector(".speed").innerHTML=data.wind.speed+"km/hr";
+                document.querySelector(".humidity-per").innerHTML=data.main.humidity+"%";
+                
+
+                if(data.weather[0].main == "Clouds"){
+                    image.src="images/clouds.png";
+                }
+                else if(data.weather[0].main == "Rain"){
+                    image.src="./images/rain.png";
+
+                }
+                else if(data.weather[0].main == "Drizzle"){
+                    image.src="./images/drizzle.png";
+
+                }
+                else if(data.weather[0].main == "Mist"){
+                    image.src="./images/mist.png";
+                    
+                }
+                else if(data.weather[0].main == "Snow"){
+                    image.src="./images/snow.png";
+                }
+                else{
+                    image.src="./images/clear.png";
+                }
+            
+            
+                
+            }
+        }
+
+        const handleclick=()=>{
+            checkweather(city.value);
+        }
+        
+            
+    </script>
+</body>
+</html>
